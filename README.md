@@ -9,6 +9,7 @@ There is
 4. **Actors** to act; 
 5. **Monitors** for monitoring of sensors and actors;
 6. And, lastly, a **scheduler** for simulating the processing of tasks in real time.
+
 ![Screenshot_20190522_230038.png](https://github.com/douglas-wiliam/Automated-Room-Simulator/blob/master/Screenshot_20190522_230038.png)
-Figure 1: Skecth diagram of application
+**Figure 1**: Sketch diagram of application
 
