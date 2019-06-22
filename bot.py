@@ -2,6 +2,7 @@
 Modelo IA Reativo Simples
 """
 from tarefas_controlador import controle_tarefas
+import random
 
 class bot():
     def __init__(self):
@@ -99,3 +100,21 @@ class bot():
 
             if(ambiente.televisão == True):
                 self.controlador.cria_tarefa('TV_DESLIG')
+
+
+    def acao_usuario(self):
+        #Simula uma interação aleatória feita pelo usuário.
+        #Gera tarefas de deadline curta
+                
+        aux_num = random.uniform(0,100)
+        if(aux_num < 0.15):
+            #0.15% de chance de ligar luz.
+            print("Usuário ligou a lâmpada.")
+            self.controlador.cria_tarefa('LAMPAD_LIGAR')
+            
+
+            
+        aux_num = random.uniform(0,100)
+        if(aux_num < 0.35):
+            #0.35% de chance de abrir porta.
+            self.controlador.cria_tarefa('PORTA_ABRIR')

@@ -1,6 +1,8 @@
 import random, time, os
 from tempo import tempo_normal, tempo_frio, tempo_quente
 from bot import bot
+import datetime
+from tabelas import tabela_ambiente, tabela_tarefas
 
 """
 Módulo para simulação do ambiente interno de uma casa.
@@ -19,7 +21,6 @@ CONVENÇÕES:
 class ambiente(object):
     def __init__(self):
         #Atributos naturais
-        self.tempo_count = 0
         self.mov_count = 0
         self.temperatura = random.uniform(21, 29)
         self.chuva = random.choice([True, False])
@@ -35,7 +36,7 @@ class ambiente(object):
         self.televisão = False
         self.janela = False
 
-    def passar_tempo(self):
+    def alterar_tempo(self):
         aux_num = random.uniform(0,200)
         if(aux_num < 0.1):
             #0.05% de chance de mudar de clima por segundo.
@@ -50,59 +51,49 @@ class ambiente(object):
                 print("Começou a chover.")
             else:
                 print("Parou de chover.")
-
-        aux_num = random.uniform(0,100)
-        if(aux_num < 0.2):
-            #0.2% de chance de movimento. Reseta contagem
-            print("Usuário executou movimento.")
-            self.mov_count = 0
-            
-        if(self.tempo_count > 18*3600):    
-            aux_num = random.uniform(0,100)
-            if(aux_num < 0.5 and self.lampada == False):
-                print("Usuário ligou a lâmpada.")
-                #0.5% de chance de ligar luz.
-                self.lampada = True
-            
-        aux_num = random.uniform(0,100)
-        if(aux_num < 0.5 and self.porta == False):
-            #0.5% de chance de abrir porta.
-            print("Usuário abriu a porta.")
-            self.porta = True    
-
-        if(self.tempo_count > 24*3600):
-            #Resetar contador de tempo ao final do dia
-            self.tempo_count = 0
-            
-            
-        self.tempo_count += 1
+                   
         self.mov_count += 1
         
         """ Mudança de temperatura e tempo """
         if(self.tempo == "Normal"):
-            self.temperatura = tempo_normal(self.temperatura, self.tempo_count)
+            self.temperatura = tempo_normal(self.temperatura, GLOBAL_TEMPO)
 
                 
         if(self.tempo == "Quente"):
-            self.temperatura = tempo_quente(self.temperatura, self.tempo_count)
+            self.temperatura = tempo_quente(self.temperatura, GLOBAL_TEMPO)
 
                         
         if(self.tempo == "Frio"):
-            self.temperatura = tempo_frio(self.temperatura, self.tempo_count)
+            self.temperatura = tempo_frio(self.temperatura, GLOBAL_TEMPO)
         
         
 #############################################################################
+
 ambiente = ambiente()
+GLOBAL_TEMPO = 0
 intervalo_prints = 2
 ambiente.tempo = 'Normal'
 bot_decisao = bot()
+
+tabela_ambiente = tabela_ambiente(ambiente)
+tabela_tarefas = tabela_tarefas(bot_decisao.controlador.lista_tarefas)
+
 while(True):
-    ambiente.passar_tempo()
+    if(GLOBAL_TEMPO > 24*3600):
+        #Resetar contador de tempo ao final do dia
+        GLOBAL_TEMPO = 0
+    else:
+        #Passagem do tempo
+        GLOBAL_TEMPO += 2
+
+    ambiente.alterar_tempo()
     bot_decisao.check_task(ambiente)
-    if(ambiente.tempo_count%1800 == 0):
+
+    if(GLOBAL_TEMPO%600 == 0):
         time.sleep(intervalo_prints)
-        os.system('cls')
-        print("Hora: " + str(ambiente.tempo_count/3600))
+        os.system('clear')
+        """
+        print("Hora: " + str(datetime.timedelta(seconds=GLOBAL_TEMPO)))
         print("Temperatura: " + str(round(ambiente.temperatura, 2)))
         print("Chuva: " + str(ambiente.chuva))
         print("Tempo: " + str(ambiente.tempo))
@@ -115,4 +106,22 @@ while(True):
         print("Janela: " + str(ambiente.ar_condicionado))
         print("Televisão: " + str(ambiente.televisão))
         print("--------------------------------------")
-        
+        """
+        ### TABELA DE DADOS ###
+        tabela_ambiente.print_table(GLOBAL_TEMPO)
+        print("===================================")
+        tabela_tarefas.print_table()
+        print("============================================================")
+        lista_tarefas = bot_decisao.controlador.lista_tarefas
+        for index in lista_tarefas:
+            print(index.nome)
+
+    if(GLOBAL_TEMPO%5 == 0):
+        #Simulação de usuário alterando o ambiente.
+        bot_decisao.acao_usuario()
+        aux_num = random.uniform(0,100)
+
+        if(aux_num < 0.2):
+            #0.2% de chance de movimento. Reseta contagem
+            print("Usuário executou movimento.")
+            ambiente.mov_count = 0

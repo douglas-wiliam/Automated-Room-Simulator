@@ -1,5 +1,6 @@
 #Módulo de controle de tarefas da IA.
 import random
+
 class _tarefa(object):
     def __init__(self, nome, n_id, deadline, tempo_exec):
         self.nome = nome
