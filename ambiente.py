@@ -4,37 +4,25 @@ from bot import bot
 import datetime
 from tabelas import tabela_ambiente, tabela_tarefas
 
-"""
-Módulo para simulação do ambiente interno de uma casa.
 
-CONVENÇÕES:        
-    TEMPO:
-        EH DADO EM MINUTOS
-        0 EH MEIA NOITE
-        12*3600 EH MEIO DIA
-        E ASSIM VAI
-        
-    O tempo EH STRINGS
-    
-    O RESTO EH TUDO BOOLEANO
-"""      
+
 class ambiente(object):
     def __init__(self):
         #Atributos naturais
         self.mov_count = 0
-        self.temperatura = random.uniform(21, 29)
+        self.temperatura = random.uniform(5, 30)
         self.chuva = random.choice([True, False])
         self.porta = random.choice([True, False])
-        self.movimento =     random.choice([True, False])
+        self.movimento = random.choice([True, False])
         self.tempo = random.choice(["Normal", "Quente", "Frio"])
         
         #Atributos de atuadores
         self.ar_condicionado = False
         self.aquecedor = False
         self.lampada = False
-        self.porta = False
+        self.porta = False #False - Aberto, True - Fechado
         self.televisão = False
-        self.janela = False
+        self.janela = False #False - Aberto, True - Fechado
 
     def alterar_tempo(self):
         aux_num = random.uniform(0,200)
@@ -71,12 +59,14 @@ class ambiente(object):
 
 ambiente = ambiente()
 GLOBAL_TEMPO = 0
-intervalo_prints = 2
+intervalo_prints = 0.2
 ambiente.tempo = 'Normal'
 bot_decisao = bot()
 
 tabela_ambiente = tabela_ambiente(ambiente)
-tabela_tarefas = tabela_tarefas(bot_decisao.controlador.lista_tarefas)
+tabela_tarefas = tabela_tarefas(bot_decisao.controlador.escalonador.tarefas_lista)
+
+event_flag = False
 
 while(True):
     if(GLOBAL_TEMPO > 24*3600):
@@ -84,44 +74,110 @@ while(True):
         GLOBAL_TEMPO = 0
     else:
         #Passagem do tempo
-        GLOBAL_TEMPO += 2
+        GLOBAL_TEMPO += 1
+        if(bot_decisao.controlador.escalonador.tarefa_exec != None):
+            nome = bot_decisao.controlador.escalonador.tarefa_exec.nome
+            deadline = bot_decisao.controlador.escalonador.tarefa_exec.deadline
+            tempo_exec = bot_decisao.controlador.escalonador.tarefa_exec.tempo_exec
+            tempo_req = bot_decisao.controlador.escalonador.tarefa_exec.tempo_req
+        else:
+            nome = "Nenhuma"
+            deadline = 0
+            tempo_exec = 0
+            tempo_req = 0
 
+    #Tarefas periódicas
     ambiente.alterar_tempo()
     bot_decisao.check_task(ambiente)
+    if(bot_decisao.controlador.escalonador.check_deadlines()):
+        #checar se alguma tarefa teve a deadline estourada
+        event_flag = True
 
-    if(GLOBAL_TEMPO%600 == 0):
+    #### ATUADORES ####
+    exec_ = bot_decisao.controlador.escalonador.executar()
+    if(exec_ != None):
+        #Checar se há algo executando, ligar a flag caso positivo.
+        event_flag = True
+        
+        
+        #Checar se a tarefa foi concluida.
+        if(exec_ == 'JANELA_ABRIR_c'):
+            bot_decisao.controlador.JANELA_ABRIR = False
+            ambiente.janela = False
+            print("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+
+        if(exec_ == 'JANELA_FECHAR_c'):
+            bot_decisao.controlador.JANELA_FECHAR = False
+            ambiente.janela = True
+
+        if(exec_ == 'PORTA_ABRIR_c'):
+            bot_decisao.controlador.PORTA_ABRIR = False
+            ambiente.porta = False
+
+        if(exec_ == 'PORTA_FECHAR_c'):
+            bot_decisao.controlador.PORTA_FECHAR = False
+            ambiente.porta = True
+
+        if(exec_ == 'ARCOND_LIGAR_c'):
+            bot_decisao.controlador.ARCOND_LIGAR = False
+            ambiente.lampada = True
+
+        if(exec_ == 'ACORND_DESLIG_c'):
+            bot_decisao.controlador.ARCOND_DESLIG  = False
+            ambiente.lampada = False
+
+        if(exec_ == 'AQUECE_LIGAR_c'):
+            bot_decisao.controlador.AQUECE_LIGAR  = False
+            ambiente.aquecedor = True
+
+        if(exec_ == 'AQUECE_DESLIG_c'):
+            bot_decisao.controlador.AQUECE_DESLIG = False
+            ambiente.aquecedor = False
+
+        if(exec_ == 'LAMPAD_LIGAR_c'):
+            bot_decisao.controlador.LAMPAD_LIGAR = False
+            ambiente.lampada = True
+
+        if(exec_ == 'LAMPAD_DESLIG_c'):
+            bot_decisao.controlador.LAMPAD_DESLIG = False
+            ambiente.lampada = True
+
+        if(exec_ == 'TV_LIGAR_c'):
+            bot_decisao.controlador.TV_LIGAR = False
+            ambiente.televisão = True
+
+        if(exec_ == 'TV_DESLIG_c'):
+             bot_decisao.controlador.TV_DESLIG = False
+             ambiente.televisão = False   
+
+    if(GLOBAL_TEMPO%600 == 0 or event_flag):
+        if(event_flag):
+            time.sleep(1)
+            event_flag = False
+
         time.sleep(intervalo_prints)
         os.system('clear')
-        """
-        print("Hora: " + str(datetime.timedelta(seconds=GLOBAL_TEMPO)))
-        print("Temperatura: " + str(round(ambiente.temperatura, 2)))
-        print("Chuva: " + str(ambiente.chuva))
-        print("Tempo: " + str(ambiente.tempo))
-        print("Timer movimento: " + str(ambiente.mov_count))
-        
-        print("Ar condicionado: " + str(ambiente.ar_condicionado))
-        print("Aquecedor: " + str(ambiente.aquecedor))
-        print("Lâmpada: " + str(ambiente.lampada))
-        print("Porta: " + str(ambiente.porta))
-        print("Janela: " + str(ambiente.ar_condicionado))
-        print("Televisão: " + str(ambiente.televisão))
-        print("--------------------------------------")
-        """
+
+
         ### TABELA DE DADOS ###
         tabela_ambiente.print_table(GLOBAL_TEMPO)
         print("===================================")
+        print("Executando:" + str(nome))
+        print(str(nome))
+        print("Deadline: " + str(deadline))
+        print("T. Exe: " + str(tempo_exec))
+        print("T. Req: " + str(tempo_req))
         tabela_tarefas.print_table()
-        print("============================================================")
-        lista_tarefas = bot_decisao.controlador.lista_tarefas
-        for index in lista_tarefas:
-            print(index.nome)
+        print("===========================================================================")
+        
 
     if(GLOBAL_TEMPO%5 == 0):
         #Simulação de usuário alterando o ambiente.
-        bot_decisao.acao_usuario()
+        event_flag = bot_decisao.acao_usuario()
         aux_num = random.uniform(0,100)
 
         if(aux_num < 0.2):
             #0.2% de chance de movimento. Reseta contagem
             print("Usuário executou movimento.")
+            event_flag = True
             ambiente.mov_count = 0

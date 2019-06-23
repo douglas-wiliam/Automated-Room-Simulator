@@ -12,7 +12,7 @@ class tabela_ambiente():
         self.table.set_cols_dtype(['t',  # text
                               't',  # float 
                             ])
-        self.table.set_cols_align(["l", "r"])
+        self.table.set_cols_align(["l", "c"])
  
         self.table.add_rows([["Informações do ambiente", ""],
                        ["Hora: ", str(datetime.timedelta(seconds=global_time))],
@@ -41,14 +41,15 @@ class tabela_tarefas():
         self.table.set_cols_dtype(['t',  # text
                               't',  # text
                               't', #text
-                              't'  #text            
+                              't',  #text
+                              't' #text            
                             ])
-        self.table.set_cols_align(["c", "c", "c", "c"])
+        self.table.set_cols_align(["l", "l", "c", "c", "c"])
  
-        self.table.add_rows([["Fila de tarefas", "", "", ""],
-                            ["ID: ", "Nome: ", "Deadline: ", "T. Execução: "]]
+        self.table.add_rows([["Fila de tarefas", "", "", "", ""],
+                            ["ID: ", "Nome: ", "Deadline: ", "T. Execução: ", "T. Requerido"]]
                             )
         for tarefa in self.lista:
-            self.table.add_row([str(tarefa.id), str(tarefa.nome), str(tarefa.deadline), str(tarefa.tempo_exec)])
+            self.table.add_row([str(tarefa.id), str(tarefa.nome), str(tarefa.deadline), str(tarefa.tempo_exec), str(tarefa.tempo_req)])
 
         print(self.table.draw())

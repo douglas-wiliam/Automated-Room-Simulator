@@ -1,18 +1,72 @@
 #Módulo de controle de tarefas da IA.
 import random
+import random, time, os
 
-class _tarefa(object):
-    def __init__(self, nome, n_id, deadline, tempo_exec):
+class tarefa(object):
+    def __init__(self, nome, n_id, deadline, tempo_req):
         self.nome = nome
         self.id = n_id
-        self.deadline = deadline
-        self.tempo_exec = tempo_exec
+        self.deadline = deadline #Deadline dado em tempo relativo (tempo da deadline - tempo atual)
+        self.tempo_exec = 0
+        self.tempo_req = tempo_req
+
+        self.event_flag = False #Flag para printar quando algo ocorrer.
 
 class escalonador():
-    #Fazer escalonador algoritmo EDF.
+    #Algoritmo EDF.
+    #Preemptivo
+    #Sem tempo de chaveamento
     def __init__(self):
-        return None
+        self.tarefas_lista = list()
+        self.tarefa_exec = None
 
+    def inserir_tarefa(self, tarefa):
+        self.tarefas_lista.append(tarefa)
+        self.tarefas_lista.sort(key= lambda x: x.deadline, reverse=False)
+
+    def check_deadlines(self):
+        if(len(self.tarefas_lista) <= 0):
+            return False
+
+        for tarefa in self.tarefas_lista:
+            tarefa.deadline -= 1
+            if(tarefa.deadline <= 0):
+                print("A tarefa " + self.tarefa_exec.nome + " teve sua deadline estourada.")
+                print("Removendo tarefa da lista.")
+                self.tarefas_lista.remove(tarefa)
+                return True
+        
+        return False
+
+    def executar(self):
+        if(self.tarefa_exec == None):
+            #Ausência de tarefa no processador. Pegar a do topo da lista.
+            if(len(self.tarefas_lista) <= 0):
+                return None
+
+            if(self.tarefas_lista[0] != None):
+                #Checa se a lista tem pelo menos uma tarefa pronta para executar.
+                self.tarefa_exec = self.tarefas_lista.pop(0)
+                print("A tarefa " + self.tarefa_exec.nome + " está sendo executada.")
+                return self.tarefa_exec.nome
+            else:
+                #Ausência de tarefa na fila.
+                return None
+
+        else:
+            #Tarefa presente no processadoor.
+            self.tarefa_exec.tempo_exec += 1
+            
+            #Checar se a tarefa foi concluída.
+            if(self.tarefa_exec.tempo_exec >= self.tarefa_exec.tempo_req):
+                nome = self.tarefa_exec.nome
+                print("A tarefa " + nome + " foi concluída.")
+                self.tarefa_exec = None
+                time.sleep(1.5)
+                return nome + "_c"
+            else:
+                return 'executando'
+                
 class controle_tarefas():
     def __init__(self):
         self.ID_COUNT = 0
@@ -38,126 +92,114 @@ class controle_tarefas():
         self.TV_LIGAR = False
         self.TV_DESLIG = False
 
-        self.lista_tarefas = list()
+        self.escalonador = escalonador()
 
     def cria_tarefa(self, nome):
 
         ###JANELA###
         if(nome == 'JANELA_ABRIR' and not self.JANELA_ABRIR):
-            deadline = 0
-            tempo_exec = random.randint(5,25)
-            tarefa = _tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            deadline = 10
+            tempo_exec = random.randint(5,10)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.JANELA_ABRIR = True
-            print('JANELA_ABRIR')
             self.ID_COUNT += 1
 
         if(nome == 'JANELA_FECHAR' and not self.JANELA_FECHAR):
-            deadline = 0
-            tempo_exec = random.randint(5,25)
-            tarefa = _tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            deadline = 10
+            tempo_exec = random.randint(5,10)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.JANELA_FECHAR = True
-            print('JANELA_FECHAR')
             self.ID_COUNT += 1
 
         ###PORTA###
         if(nome == 'PORTA_ABRIR' and not self.PORTA_ABRIR):
-            deadline = 3
-            tempo_exec = random.randint(25,35)
-            tarefa = _tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            deadline = 12
+            tempo_exec = random.randint(8,12)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.PORTA_ABRIR = True
-            print('PORTA_ABRIR')
             self.ID_COUNT += 1
 
         if(nome == 'PORTA_FECHAR' and not self.PORTA_FECHAR):
-            deadline = 3
-            tempo_exec = random.randint(25,35)
-            tarefa = _tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            deadline = 15
+            tempo_exec = random.randint(10,15)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.PORTA_FECHAR = True
-            print('FECHAR_PORTA')
             self.ID_COUNT += 1
 
         ###AR_CONDICIONADO###
         if(nome == 'ARCOND_LIGAR' and not self.ARCOND_LIGAR):
-            deadline = 2
+            deadline = 18
             tempo_exec = random.randint(5,10)
-            tarefa = _tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.ARCOND_LIGAR = True
-            print('ARCOND_LIGAR')
             self.ID_COUNT += 1
 
         if(nome == 'ARCOND_DESLIG' and not self.ARCOND_DESLIG):
-            deadline = 2
+            deadline = 18
             tempo_exec = random.randint(5,10)
-            tarefa = _tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.ARCOND_DESLIG = True
-            print('ARCOND_DESLIG')
             self.ID_COUNT += 1
 
         ###AQUECEDOR###
         if(nome == 'AQUECE_LIGAR' and not self.AQUECE_LIGAR):
-            deadline = 2
-            tempo_exec = random.randint(10,20)
-            tarefa = _tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            deadline = 18
+            tempo_exec = random.randint(5,10)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.AQUECE_LIGAR = True
-            print('AQUECE_LIGAR')
             self.ID_COUNT += 1
 
         if(nome == 'AQUECE_DESLIG' and not self.AQUECE_DESLIG):
-            deadline = 2
-            tempo_exec = random.randint(10,20)
-            tarefa = _tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            deadline = 18
+            tempo_exec = random.randint(5,10)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.ARCOND_DESLIG = True
-            print('AQUECE_DESLIG')
             self.ID_COUNT += 1
 
         ###LAMPADA###
         if(nome == 'LAMPAD_LIGAR' and not self.LAMPAD_LIGAR):
-            deadline = 2
-            tempo_exec = random.randint(3,5)
-            tarefa = _tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            deadline = 3
+            tempo_exec = random.randint(1,3)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.LAMPAD_LIGAR = True
-            print('LAMPAD_LIGAR')
             self.ID_COUNT += 1
 
         if(nome == 'LAMPAD_DESLIG' and not self.LAMPAD_DESLIG):
-            deadline = 2
-            tempo_exec = random.randint(3,5)
-            tarefa = _tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            deadline = 3
+            tempo_exec = random.randint(1,3)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.LAMPAD_DESLIG = True
-            print('LAMPAD_DESLIG')
             self.ID_COUNT += 1
 
-        ###LAMPADA###
+        ###TELEVISÃO###
         if(nome == 'TV_LIGAR' and not self.TV_LIGAR):
-            deadline = 2
-            tempo_exec = random.randint(3,5)
-            tarefa = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            deadline = 3
+            tempo_exec = random.randint(1,2)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.TV_LIGAR = True
-            print('TV_LIGAR')
             self.ID_COUNT += 1
             
 
         if(nome == 'TV_DESLIG' and not self.TV_DESLIG):
-            deadline = 2
-            tempo_exec = random.randint(3,5)
-            tarefa = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
-            self.lista_tarefas.append(tarefa)
+            deadline = 3
+            tempo_exec = random.randint(1,3)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
             self.TV_DESLIG = True
-            print('TV_DESLIG')
             self.ID_COUNT += 1
 
         else:
-            tarefa = None
+            tarefa_ = None
 
-        return tarefa
+        return tarefa_

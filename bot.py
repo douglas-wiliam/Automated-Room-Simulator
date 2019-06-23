@@ -2,7 +2,7 @@
 Modelo IA Reativo Simples
 """
 from tarefas_controlador import controle_tarefas
-import random
+import random, time
 
 class bot():
     def __init__(self):
@@ -25,7 +25,6 @@ class bot():
         janela = False
         """
         self.controlador = controle_tarefas()
-        print(self.controlador)
 
     def check_task(self, ambiente):
         #Decisões tomadas a partir de condicionais
@@ -105,16 +104,21 @@ class bot():
     def acao_usuario(self):
         #Simula uma interação aleatória feita pelo usuário.
         #Gera tarefas de deadline curta
-                
+        event_flag = False
         aux_num = random.uniform(0,100)
         if(aux_num < 0.15):
             #0.15% de chance de ligar luz.
             print("Usuário ligou a lâmpada.")
             self.controlador.cria_tarefa('LAMPAD_LIGAR')
-            
+            event_flag = True
+            time.sleep(1.5)
 
-            
         aux_num = random.uniform(0,100)
         if(aux_num < 0.35):
             #0.35% de chance de abrir porta.
+            print("Usuário abriu a porta.")
             self.controlador.cria_tarefa('PORTA_ABRIR')
+            event_flag = True
+            time.sleep(1.5)
+
+        return event_flag
