@@ -19,7 +19,7 @@ class tabela_ambiente():
                        ["Hora: ", str(datetime.timedelta(seconds=global_time))],
                        ["Temperatura: ", str(round(self.ambiente.temperatura, 2))],
                        ["Chuva: ", str(self.ambiente.chuva)],
-                       ["Tempo: ", str(self.ambiente.tempo)],
+                       ["Estado Atmosférico: ", str(self.ambiente.estado_atmosferico)],
                        [" ", " "],
                        ["Último movimento foi há: ", str(datetime.timedelta(seconds=self.ambiente.mov_count))],
                        ["Ar condicionado: ", str(self.ambiente.ar_condicionado)],

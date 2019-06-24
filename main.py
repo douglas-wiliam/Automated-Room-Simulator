@@ -3,13 +3,13 @@ import random, time, os, sys
 from ambiente import ambiente
 from tabelas import tabela_ambiente, tabela_tarefas
 from _global import insert_message, print_messages
-from tempo import tempo_normal, tempo_frio, tempo_quente
+from estado_atmosferico import estado_atmosferico_normal, estado_atmosferico_frio, estado_atmosferico_quente
 
 
 ambiente = ambiente()
-GLOBAL_TEMPO = 0
+TEMPO_GLOBAL = 0
 intervalo_prints = 0.05
-ambiente.tempo = 'Normal'
+ambiente.estado_atmosferico = 'Normal'
 bot_decisao = bot()
 
 tabela_ambiente = tabela_ambiente(ambiente)
@@ -37,19 +37,19 @@ bot_decisao.controlador.cria_tarefa('TV_DESLIG')
 while(True):
     time.sleep(intervalo_prints)
 
-    if(GLOBAL_TEMPO%600 == 0 or event_flag):
+    if(TEMPO_GLOBAL%600 == 0 or event_flag):
         if(event_flag):
             time.sleep(0.7)
             event_flag = False
 
     os.system('clear')
 
-    if(GLOBAL_TEMPO > 24*3600):
+    if(TEMPO_GLOBAL > 24*3600):
         #Resetar contador de tempo ao final do dia
-        GLOBAL_TEMPO = 0
+        TEMPO_GLOBAL = 0
     else:
         #Passagem do tempo
-        GLOBAL_TEMPO += 1
+        TEMPO_GLOBAL += 1
         if(bot_decisao.controlador.escalonador.tarefa_exec != None):
             nome = bot_decisao.controlador.escalonador.tarefa_exec.nome
             deadline = bot_decisao.controlador.escalonador.tarefa_exec.deadline
@@ -62,7 +62,7 @@ while(True):
             tempo_req = 0
 
     #Tarefas periódicas
-    ambiente.alterar_tempo(GLOBAL_TEMPO)
+    ambiente.alterar_estado_atmosferico(TEMPO_GLOBAL)
     bot_decisao.check_task(ambiente)
     if(bot_decisao.controlador.escalonador.check_deadlines()):
         #checar se alguma tarefa teve a deadline estourada
@@ -124,7 +124,7 @@ while(True):
              bot_decisao.controlador.TV_DESLIG = False
              ambiente.televisão = False 
 
-    if(GLOBAL_TEMPO%5 == 0):
+    if(TEMPO_GLOBAL%5 == 0):
         #Simulação de usuário alterando o ambiente.
         event_flag = bot_decisao.acao_usuario()
         aux_num = random.uniform(0,100)
@@ -136,7 +136,7 @@ while(True):
             ambiente.mov_count = 0
 
     ### TABELAS DE DADOS ###
-    tabela_ambiente.print_table(GLOBAL_TEMPO)
+    tabela_ambiente.print_table(TEMPO_GLOBAL)
     print("===================================")
     print("Executando:" + str(nome))
     print("Deadline: " + str(deadline))

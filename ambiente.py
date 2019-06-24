@@ -1,5 +1,5 @@
 import random
-from tempo import tempo_normal, tempo_frio, tempo_quente
+from estado_atmosferico import estado_atmosferico_normal, estado_atmosferico_frio, estado_atmosferico_quente
 from _global import insert_message
 
 class ambiente(object):
@@ -10,7 +10,7 @@ class ambiente(object):
         self.chuva = random.choice([True, False])
         self.porta = random.choice([True, False])
         self.movimento = random.choice([True, False])
-        self.tempo = random.choice(["Normal", "Quente", "Frio"])
+        self.estado_atmosferico = random.choice(["Normal", "Quente", "Frio"])
         
         #Atributos de atuadores
         self.ar_condicionado = False
@@ -21,12 +21,12 @@ class ambiente(object):
         self.televisão = False
 
 
-    def alterar_tempo(self, tempo_global):
+    def alterar_estado_atmosferico(self, tempo_global):
         aux_num = random.uniform(0,200)
         if(aux_num < 0.1):
             #0.05% de chance de mudar de clima por segundo.
-            self.tempo = random.choice(["Normal", "Quente", "Frio"])
-            insert_message("Tempo mudou para " + str(self.tempo) + ".")
+            self.estado_atmosferico = random.choice(["Normal", "Quente", "Frio"])
+            insert_message("estado_atmosferico mudou para " + str(self.estado_atmosferico) + ".")
             
         aux_num = random.uniform(0,150)
         if(aux_num < 0.1):
@@ -39,15 +39,15 @@ class ambiente(object):
                    
         self.mov_count += 1
         
-        """ Mudança de temperatura e tempo """
-        if(self.tempo == "Normal"):
-            self.temperatura = tempo_normal(self.temperatura, tempo_global)
+        """ Mudança de temperatura e estado atmosférico """
+        if(self.estado_atmosferico == "Normal"):
+            self.temperatura = estado_atmosferico_normal(self.temperatura, tempo_global)
 
                 
-        if(self.tempo == "Quente"):
-            self.temperatura = tempo_quente(self.temperatura, tempo_global)
+        if(self.estado_atmosferico == "Quente"):
+            self.temperatura = estado_atmosferico_quente(self.temperatura, tempo_global)
 
                         
-        if(self.tempo == "Frio"):
-            self.temperatura = tempo_frio(self.temperatura, tempo_global)
+        if(self.estado_atmosferico == "Frio"):
+            self.temperatura = estado_atmosferico_frio(self.temperatura, tempo_global)
         
