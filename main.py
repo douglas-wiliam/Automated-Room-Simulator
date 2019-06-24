@@ -8,7 +8,7 @@ from estado_atmosferico import estado_atmosferico_normal, estado_atmosferico_fri
 
 ambiente = ambiente()
 TEMPO_GLOBAL = 0
-intervalo_prints = 0.05
+intervalo_prints = 1.0
 ambiente.estado_atmosferico = 'Normal'
 bot_decisao = bot()
 
@@ -16,23 +16,6 @@ tabela_ambiente = tabela_ambiente(ambiente)
 tabela_tarefas = tabela_tarefas(bot_decisao.controlador.escalonador.tarefas_lista)
 
 event_flag = False
-
-#### TESTE ####
-bot_decisao.controlador.cria_tarefa('JANELA_FECHAR')
-"""
-bot_decisao.controlador.cria_tarefa('PORTA_FECHAR')
-bot_decisao.controlador.cria_tarefa('LAMPAD_LIGAR')
-bot_decisao.controlador.cria_tarefa('ARCOND_LIGAR')
-bot_decisao.controlador.cria_tarefa('AQUECE_LIGAR')
-bot_decisao.controlador.cria_tarefa('TV_LIGAR')
-
-bot_decisao.controlador.cria_tarefa('JANELA_ABRIR')
-bot_decisao.controlador.cria_tarefa('PORTA_ABRIR')
-bot_decisao.controlador.cria_tarefa('LAMPAD_DESLIG')
-bot_decisao.controlador.cria_tarefa('ARCOND_DESLIG')
-bot_decisao.controlador.cria_tarefa('AQUECE_DESLIG')
-bot_decisao.controlador.cria_tarefa('TV_DESLIG')
-"""
 
 while(True):
     time.sleep(intervalo_prints)
@@ -124,9 +107,9 @@ while(True):
              bot_decisao.controlador.TV_DESLIG = False
              ambiente.televisão = False 
 
-    if(TEMPO_GLOBAL%5 == 0):
+    if(TEMPO_GLOBAL%2 == 0):
         #Simulação de usuário alterando o ambiente.
-        event_flag = bot_decisao.acao_usuario()
+        event_flag = bot_decisao.acao_usuario(ambiente)
         aux_num = random.uniform(0,100)
 
         if(aux_num < 0.2):
