@@ -20,14 +20,16 @@ class tabela_ambiente():
                        ["Temperatura: ", str(round(self.ambiente.temperatura, 2))],
                        ["Chuva: ", str(self.ambiente.chuva)],
                        ["Estado Atmosférico: ", str(self.ambiente.estado_atmosferico)],
+                       ["Sujeira: ", str(self.ambiente.sujeira)],
                        [" ", " "],
                        ["Último movimento foi há: ", str(datetime.timedelta(seconds=self.ambiente.mov_count))],
-                       ["Ar condicionado: ", str(self.ambiente.ar_condicionado)],
+                       ["Ar-condicionado: ", str(self.ambiente.ar_condicionado)],
                        ["Aquecedor: ", str(self.ambiente.aquecedor)],
                        ["Lâmpada: ", str(self.ambiente.lampada)],
                        ["Porta: ", str(self.ambiente.porta)],
                        ["Janela: ", str(self.ambiente.janela)],
-                       ["Televisão: ", str(self.ambiente.televisão)]])
+                       ["Televisão: ", str(self.ambiente.televisão)],
+                       ["Aspirador de pó: ", str(self.ambiente.aspirador)]])
         
         print(self.table.draw())
 

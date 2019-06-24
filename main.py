@@ -8,7 +8,7 @@ from estado_atmosferico import estado_atmosferico_normal, estado_atmosferico_fri
 
 ambiente = ambiente()
 TEMPO_GLOBAL = 0
-intervalo_prints = 1.0
+intervalo_prints = 0.05
 ambiente.estado_atmosferico = 'Normal'
 bot_decisao = bot()
 
@@ -106,13 +106,17 @@ while(True):
         if(exec_ == 'TV_DESLIG_c'):
              bot_decisao.controlador.TV_DESLIG = False
              ambiente.televisão = False 
+            
+        if(exec_ == 'ASPIRA_c'):
+            bot_decisao.controlador.ASPIRA = False
+            ambiente.aspirador = False
 
     if(TEMPO_GLOBAL%2 == 0):
         #Simulação de usuário alterando o ambiente.
         event_flag = bot_decisao.acao_usuario(ambiente)
         aux_num = random.uniform(0,100)
 
-        if(aux_num < 0.2):
+        if(aux_num < 10):
             #0.2% de chance de movimento. Reseta contagem
             insert_message("Usuário executou movimento.")
             event_flag = True

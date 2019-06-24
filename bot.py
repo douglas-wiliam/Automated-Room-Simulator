@@ -103,6 +103,12 @@ class bot():
             if(ambiente.televisão == True):
                 self.controlador.cria_tarefa('TV_DESLIG')
 
+        # Aspirador
+        if(ambiente.sujeira == True and ambiente.mov_count > 20):
+            if(ambiente.aspirador == False):
+                ambiente.aspirador = True
+                self.controlador.cria_tarefa('ASPIRA')
+
     def acao_usuario(self, ambiente):
         # Simula uma interação aleatória feita pelo usuário.
         # Gera tarefas de deadline curta
@@ -126,6 +132,7 @@ class bot():
                 insert_message("Usuário fechou a porta.")
                 self.controlador.cria_tarefa('PORTA_FECHAR')
 
+            ambiente.sujeira == random.choice([True, False])
             event_flag = True
 
         aux_num = random.uniform(0, 100)

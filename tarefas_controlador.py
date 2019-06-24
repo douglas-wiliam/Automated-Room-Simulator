@@ -4,7 +4,6 @@ import time
 import os
 from _global import insert_message
 
-
 class tarefa(object):
     def __init__(self, nome, n_id, deadline, tempo_req):
         self.nome = nome
@@ -15,7 +14,6 @@ class tarefa(object):
         self.tempo_req = tempo_req
 
         self.event_flag = False  # Flag para printar quando algo ocorrer.
-
 
 class escalonador():
     # Algoritmo EDF.
@@ -108,6 +106,8 @@ class controle_tarefas():
 
         self.TV_LIGAR = False
         self.TV_DESLIG = False
+
+        self.ASPIRA = False
 
         self.escalonador = escalonador()
 
@@ -213,6 +213,15 @@ class controle_tarefas():
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
             self.escalonador.inserir_tarefa(tarefa_)
             self.TV_DESLIG = True
+            self.ID_COUNT += 1
+
+        ###ASPIRADOR DE PÓ###
+        if(nome == 'ASPIRA' and not self.ASPIRA):
+            deadline = 800
+            tempo_exec = random.randint(300, 400)
+            tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
+            self.escalonador.inserir_tarefa(tarefa_)
+            self.ASPIRA = True
             self.ID_COUNT += 1
 
         else:
