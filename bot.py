@@ -93,8 +93,8 @@ class bot():
             if(ambiente.porta == False):
                 self.controlador.cria_tarefa('PORTA_FECHAR')
                 
-        if(ambiente.mov_count > 900):
-            #Fechar a porta e desligar a televisão se ela ficar aberta por mais de 15 minutos.
+        if(ambiente.mov_count > 300):
+            #Fechar a porta e desligar a televisão se ela ficar aberta por mais de 5 minutos.
             if(ambiente.porta == False):
                 self.controlador.cria_tarefa('PORTA_FECHAR')
 
@@ -107,19 +107,24 @@ class bot():
         #Gera tarefas de deadline curta
         event_flag = False
         aux_num = random.uniform(0,100)
-        if(aux_num < 0.15):
-            #0.15% de chance de ligar luz.
+        if(aux_num < 0.55):
+            #0.55% de chance de ligar luz.
             insert_message("Usuário ligou a lâmpada.")
             self.controlador.cria_tarefa('LAMPAD_LIGAR')
             event_flag = True
-            time.sleep(1.5)
+
+        aux_num = random.uniform(0,100)
+        if(aux_num < 0.95):
+            #0.95% de chance de abrir porta.
+            insert_message("Usuário abriu a porta.")
+            self.controlador.cria_tarefa('PORTA_ABRIR')
+            event_flag = True
 
         aux_num = random.uniform(0,100)
         if(aux_num < 0.35):
             #0.35% de chance de abrir porta.
-            insert_message("Usuário abriu a porta.")
-            self.controlador.cria_tarefa('PORTA_ABRIR')
+            insert_message("Usuário ligou a televisão.")
+            self.controlador.cria_tarefa('TV_LIGAR')
             event_flag = True
-            time.sleep(1.5)
 
         return event_flag

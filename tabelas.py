@@ -26,7 +26,7 @@ class tabela_ambiente():
                        ["Aquecedor: ", str(self.ambiente.aquecedor)],
                        ["Lâmpada: ", str(self.ambiente.lampada)],
                        ["Porta: ", str(self.ambiente.porta)],
-                       ["Janela: ", str(self.ambiente.ar_condicionado)],
+                       ["Janela: ", str(self.ambiente.janela)],
                        ["Televisão: ", str(self.ambiente.televisão)]])
         
         print(self.table.draw())

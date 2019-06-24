@@ -1,5 +1,5 @@
 message_list = list()
-list_limit = 10
+list_limit = 5
 
 def insert_message(msg):
     if(len(message_list) > list_limit):

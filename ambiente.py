@@ -1,4 +1,4 @@
-import random, time, os
+import random, time, os, sys
 from tempo import tempo_normal, tempo_frio, tempo_quente
 from bot import bot
 import datetime
@@ -21,9 +21,10 @@ class ambiente(object):
         self.ar_condicionado = False
         self.aquecedor = False
         self.lampada = False
+        self.janela = False #False - Aberto, True - Fechado
         self.porta = False #False - Aberto, True - Fechado
         self.televisão = False
-        self.janela = False #False - Aberto, True - Fechado
+
 
     def alterar_tempo(self):
         aux_num = random.uniform(0,200)
@@ -60,7 +61,7 @@ class ambiente(object):
 
 ambiente = ambiente()
 GLOBAL_TEMPO = 0
-intervalo_prints = 0.1
+intervalo_prints = 0.05
 ambiente.tempo = 'Normal'
 bot_decisao = bot()
 
@@ -69,12 +70,31 @@ tabela_tarefas = tabela_tarefas(bot_decisao.controlador.escalonador.tarefas_list
 
 event_flag = False
 
+#### TESTE ####
+bot_decisao.controlador.cria_tarefa('JANELA_FECHAR')
+"""
+bot_decisao.controlador.cria_tarefa('PORTA_FECHAR')
+bot_decisao.controlador.cria_tarefa('LAMPAD_LIGAR')
+bot_decisao.controlador.cria_tarefa('ARCOND_LIGAR')
+bot_decisao.controlador.cria_tarefa('AQUECE_LIGAR')
+bot_decisao.controlador.cria_tarefa('TV_LIGAR')
+
+bot_decisao.controlador.cria_tarefa('JANELA_ABRIR')
+bot_decisao.controlador.cria_tarefa('PORTA_ABRIR')
+bot_decisao.controlador.cria_tarefa('LAMPAD_DESLIG')
+bot_decisao.controlador.cria_tarefa('ARCOND_DESLIG')
+bot_decisao.controlador.cria_tarefa('AQUECE_DESLIG')
+bot_decisao.controlador.cria_tarefa('TV_DESLIG')
+"""
+
 while(True):
     time.sleep(intervalo_prints)
+
     if(GLOBAL_TEMPO%600 == 0 or event_flag):
         if(event_flag):
-            time.sleep(1)
+            time.sleep(0.7)
             event_flag = False
+
     os.system('clear')
 
     if(GLOBAL_TEMPO > 24*3600):
@@ -107,7 +127,6 @@ while(True):
         #Checar se há algo executando, ligar a flag caso positivo.
         event_flag = True
         
-        
         #Checar se a tarefa foi concluida.
         if(exec_ == 'JANELA_ABRIR_c'):
             bot_decisao.controlador.JANELA_ABRIR = False
@@ -116,6 +135,7 @@ while(True):
         if(exec_ == 'JANELA_FECHAR_c'):
             bot_decisao.controlador.JANELA_FECHAR = False
             ambiente.janela = True
+            print("------ JANELA FECHADA -------")
 
         if(exec_ == 'PORTA_ABRIR_c'):
             bot_decisao.controlador.PORTA_ABRIR = False
@@ -147,7 +167,7 @@ while(True):
 
         if(exec_ == 'LAMPAD_DESLIG_c'):
             bot_decisao.controlador.LAMPAD_DESLIG = False
-            ambiente.lampada = True
+            ambiente.lampada = False
 
         if(exec_ == 'TV_LIGAR_c'):
             bot_decisao.controlador.TV_LIGAR = False
@@ -155,7 +175,7 @@ while(True):
 
         if(exec_ == 'TV_DESLIG_c'):
              bot_decisao.controlador.TV_DESLIG = False
-             ambiente.televisão = False   
+             ambiente.televisão = False 
 
     if(GLOBAL_TEMPO%5 == 0):
         #Simulação de usuário alterando o ambiente.
@@ -172,7 +192,6 @@ while(True):
     tabela_ambiente.print_table(GLOBAL_TEMPO)
     print("===================================")
     print("Executando:" + str(nome))
-    print(str(nome))
     print("Deadline: " + str(deadline))
     print("T. Exe: " + str(tempo_exec))
     print("T. Req: " + str(tempo_req))

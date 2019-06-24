@@ -8,7 +8,7 @@ class tarefa(object):
         self.nome = nome
         self.id = n_id
         self.deadline = deadline #Deadline dado em tempo relativo (tempo da deadline - tempo atual)
-        self.tempo_exec = 0
+        self.tempo_exec = 1
         self.tempo_req = tempo_req
 
         self.event_flag = False #Flag para printar quando algo ocorrer.
@@ -32,7 +32,7 @@ class escalonador():
         for tarefa in self.tarefas_lista:
             tarefa.deadline -= 1
             if(tarefa.deadline <= 0):
-                insert_message("A tarefa " + self.tarefa_exec.nome + " teve sua deadline estourada.")
+                insert_message("A tarefa " + tarefa.nome + " teve sua deadline estourada.")
                 insert_message("Removendo tarefa da lista.")
                 self.tarefas_lista.remove(tarefa)
                 return True
