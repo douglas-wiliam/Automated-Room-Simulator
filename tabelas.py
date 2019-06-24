@@ -1,5 +1,6 @@
 from texttable import Texttable
 import datetime
+from _global import insert_message
 
 class tabela_ambiente():
     def __init__(self, ambiente):

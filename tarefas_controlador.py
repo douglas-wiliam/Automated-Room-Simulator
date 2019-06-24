@@ -1,6 +1,7 @@
 #Módulo de controle de tarefas da IA.
 import random
-import random, time, os
+import time, os
+from _global import insert_message
 
 class tarefa(object):
     def __init__(self, nome, n_id, deadline, tempo_req):
@@ -31,8 +32,8 @@ class escalonador():
         for tarefa in self.tarefas_lista:
             tarefa.deadline -= 1
             if(tarefa.deadline <= 0):
-                print("A tarefa " + self.tarefa_exec.nome + " teve sua deadline estourada.")
-                print("Removendo tarefa da lista.")
+                insert_message("A tarefa " + self.tarefa_exec.nome + " teve sua deadline estourada.")
+                insert_message("Removendo tarefa da lista.")
                 self.tarefas_lista.remove(tarefa)
                 return True
         
@@ -47,7 +48,7 @@ class escalonador():
             if(self.tarefas_lista[0] != None):
                 #Checa se a lista tem pelo menos uma tarefa pronta para executar.
                 self.tarefa_exec = self.tarefas_lista.pop(0)
-                print("A tarefa " + self.tarefa_exec.nome + " está sendo executada.")
+                insert_message("A tarefa " + self.tarefa_exec.nome + " está sendo executada.")
                 return self.tarefa_exec.nome
             else:
                 #Ausência de tarefa na fila.
@@ -60,9 +61,8 @@ class escalonador():
             #Checar se a tarefa foi concluída.
             if(self.tarefa_exec.tempo_exec >= self.tarefa_exec.tempo_req):
                 nome = self.tarefa_exec.nome
-                print("A tarefa " + nome + " foi concluída.")
+                insert_message("A tarefa " + nome + " foi concluída.")
                 self.tarefa_exec = None
-                time.sleep(1.5)
                 return nome + "_c"
             else:
                 return 'executando'

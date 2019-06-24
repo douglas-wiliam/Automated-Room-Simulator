@@ -2,6 +2,7 @@
 Modelo IA Reativo Simples
 """
 from tarefas_controlador import controle_tarefas
+from _global import insert_message
 import random, time
 
 class bot():
@@ -108,7 +109,7 @@ class bot():
         aux_num = random.uniform(0,100)
         if(aux_num < 0.15):
             #0.15% de chance de ligar luz.
-            print("Usuário ligou a lâmpada.")
+            insert_message("Usuário ligou a lâmpada.")
             self.controlador.cria_tarefa('LAMPAD_LIGAR')
             event_flag = True
             time.sleep(1.5)
@@ -116,7 +117,7 @@ class bot():
         aux_num = random.uniform(0,100)
         if(aux_num < 0.35):
             #0.35% de chance de abrir porta.
-            print("Usuário abriu a porta.")
+            insert_message("Usuário abriu a porta.")
             self.controlador.cria_tarefa('PORTA_ABRIR')
             event_flag = True
             time.sleep(1.5)

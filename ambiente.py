@@ -3,6 +3,7 @@ from tempo import tempo_normal, tempo_frio, tempo_quente
 from bot import bot
 import datetime
 from tabelas import tabela_ambiente, tabela_tarefas
+from _global import insert_message, print_messages
 
 
 
@@ -29,16 +30,16 @@ class ambiente(object):
         if(aux_num < 0.1):
             #0.05% de chance de mudar de clima por segundo.
             self.tempo = random.choice(["Normal", "Quente", "Frio"])
-            print("Tempo mudou para " + str(self.tempo) + ".")
+            insert_message("Tempo mudou para " + str(self.tempo) + ".")
             
         aux_num = random.uniform(0,150)
         if(aux_num < 0.1):
             #% de chance de começar a chover ou parar de chover.
             self.chuva = not self.chuva
             if(self.chuva):
-                print("Começou a chover.")
+                insert_message("Começou a chover.")
             else:
-                print("Parou de chover.")
+                insert_message("Parou de chover.")
                    
         self.mov_count += 1
         
@@ -59,7 +60,7 @@ class ambiente(object):
 
 ambiente = ambiente()
 GLOBAL_TEMPO = 0
-intervalo_prints = 0.2
+intervalo_prints = 0.1
 ambiente.tempo = 'Normal'
 bot_decisao = bot()
 
@@ -69,6 +70,13 @@ tabela_tarefas = tabela_tarefas(bot_decisao.controlador.escalonador.tarefas_list
 event_flag = False
 
 while(True):
+    time.sleep(intervalo_prints)
+    if(GLOBAL_TEMPO%600 == 0 or event_flag):
+        if(event_flag):
+            time.sleep(1)
+            event_flag = False
+    os.system('clear')
+
     if(GLOBAL_TEMPO > 24*3600):
         #Resetar contador de tempo ao final do dia
         GLOBAL_TEMPO = 0
@@ -104,7 +112,6 @@ while(True):
         if(exec_ == 'JANELA_ABRIR_c'):
             bot_decisao.controlador.JANELA_ABRIR = False
             ambiente.janela = False
-            print("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
 
         if(exec_ == 'JANELA_FECHAR_c'):
             bot_decisao.controlador.JANELA_FECHAR = False
@@ -150,27 +157,6 @@ while(True):
              bot_decisao.controlador.TV_DESLIG = False
              ambiente.televisão = False   
 
-    if(GLOBAL_TEMPO%600 == 0 or event_flag):
-        if(event_flag):
-            time.sleep(1)
-            event_flag = False
-
-        time.sleep(intervalo_prints)
-        os.system('clear')
-
-
-        ### TABELA DE DADOS ###
-        tabela_ambiente.print_table(GLOBAL_TEMPO)
-        print("===================================")
-        print("Executando:" + str(nome))
-        print(str(nome))
-        print("Deadline: " + str(deadline))
-        print("T. Exe: " + str(tempo_exec))
-        print("T. Req: " + str(tempo_req))
-        tabela_tarefas.print_table()
-        print("===========================================================================")
-        
-
     if(GLOBAL_TEMPO%5 == 0):
         #Simulação de usuário alterando o ambiente.
         event_flag = bot_decisao.acao_usuario()
@@ -178,6 +164,18 @@ while(True):
 
         if(aux_num < 0.2):
             #0.2% de chance de movimento. Reseta contagem
-            print("Usuário executou movimento.")
+            insert_message("Usuário executou movimento.")
             event_flag = True
             ambiente.mov_count = 0
+
+    ### TABELAS DE DADOS ###
+    tabela_ambiente.print_table(GLOBAL_TEMPO)
+    print("===================================")
+    print("Executando:" + str(nome))
+    print(str(nome))
+    print("Deadline: " + str(deadline))
+    print("T. Exe: " + str(tempo_exec))
+    print("T. Req: " + str(tempo_req))
+    tabela_tarefas.print_table()
+    print("===========================================================================")
+    print_messages()
