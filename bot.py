@@ -68,7 +68,6 @@ class bot():
                 self.controlador.cria_tarefa('ARCOND_DESLIG')
 
         # Aquecedor
-
         # Ligar o aquecedor caso a temperatura externa for inferior a 10.
         if(ambiente.temperatura < 10):
             if(ambiente.aquecedor == False):
@@ -103,8 +102,8 @@ class bot():
             if(ambiente.televisão == True):
                 self.controlador.cria_tarefa('TV_DESLIG')
 
-        # Aspirador
-        if(ambiente.sujeira == True and ambiente.mov_count > 20):
+        #Aspirador
+        if(ambiente.sujeira == True and ambiente.mov_count > 100):
             if(ambiente.aspirador == False):
                 ambiente.aspirador = True
                 self.controlador.cria_tarefa('ASPIRA')

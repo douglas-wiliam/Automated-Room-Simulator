@@ -25,7 +25,7 @@ class ambiente(object):
     def alterar_estado_atmosferico(self, tempo_global):
         aux_num = random.uniform(0,200)
         if(aux_num < 0.1):
-            #0.05% de chance de mudar de estado atmosférico por segundo.
+            #0.1% de chance de mudar de estado atmosférico por segundo.
             self.estado_atmosferico = random.choice(["Normal", "Quente", "Frio"])
             insert_message("estado_atmosferico mudou para " + str(self.estado_atmosferico) + ".")
             

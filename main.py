@@ -109,6 +109,7 @@ while(True):
             
         if(exec_ == 'ASPIRA_c'):
             bot_decisao.controlador.ASPIRA = False
+            ambiente.sujeira = False
             ambiente.aspirador = False
 
     if(TEMPO_GLOBAL%2 == 0):
@@ -116,8 +117,8 @@ while(True):
         event_flag = bot_decisao.acao_usuario(ambiente)
         aux_num = random.uniform(0,100)
 
-        if(aux_num < 10):
-            #0.2% de chance de movimento. Reseta contagem
+        if(aux_num < 0.1):
+            #0.1% de chance de movimento. Reseta contagem
             insert_message("Usuário executou movimento.")
             event_flag = True
             ambiente.mov_count = 0

@@ -75,8 +75,9 @@ class escalonador():
                 if(len(self.tarefas_lista) > 0):
                     if(self.tarefas_lista[0].deadline < self.tarefa_exec.deadline):
                         insert_message(
-                            "A tarefa " + self.tarefa_exec.nome + "sofreu preempção.")
+                            "A tarefa " + self.tarefa_exec.nome + " sofreu preempção.")
                         self.inserir_tarefa(self.tarefa_exec)
+                        self.tarefa_exec = self.tarefas_lista.pop(0)
                         return None
                 else:
                     return 'executando'
@@ -122,7 +123,7 @@ class controle_tarefas():
             self.JANELA_ABRIR = True
             self.ID_COUNT += 1
 
-        if(nome == 'JANELA_FECHAR' and not self.JANELA_FECHAR):
+        elif(nome == 'JANELA_FECHAR' and not self.JANELA_FECHAR):
             deadline = 10
             tempo_exec = random.randint(5, 10)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -131,7 +132,7 @@ class controle_tarefas():
             self.ID_COUNT += 1
 
         ###PORTA###
-        if(nome == 'PORTA_ABRIR' and not self.PORTA_ABRIR):
+        elif(nome == 'PORTA_ABRIR' and not self.PORTA_ABRIR):
             deadline = 12
             tempo_exec = random.randint(8, 12)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -139,7 +140,7 @@ class controle_tarefas():
             self.PORTA_ABRIR = True
             self.ID_COUNT += 1
 
-        if(nome == 'PORTA_FECHAR' and not self.PORTA_FECHAR):
+        elif(nome == 'PORTA_FECHAR' and not self.PORTA_FECHAR):
             deadline = 15
             tempo_exec = random.randint(10, 15)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -148,7 +149,7 @@ class controle_tarefas():
             self.ID_COUNT += 1
 
         ###AR_CONDICIONADO###
-        if(nome == 'ARCOND_LIGAR' and not self.ARCOND_LIGAR):
+        elif(nome == 'ARCOND_LIGAR' and not self.ARCOND_LIGAR):
             deadline = 18
             tempo_exec = random.randint(5, 10)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -156,7 +157,7 @@ class controle_tarefas():
             self.ARCOND_LIGAR = True
             self.ID_COUNT += 1
 
-        if(nome == 'ARCOND_DESLIG' and not self.ARCOND_DESLIG):
+        elif(nome == 'ARCOND_DESLIG' and not self.ARCOND_DESLIG):
             deadline = 18
             tempo_exec = random.randint(5, 10)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -165,7 +166,7 @@ class controle_tarefas():
             self.ID_COUNT += 1
 
         ###AQUECEDOR###
-        if(nome == 'AQUECE_LIGAR' and not self.AQUECE_LIGAR):
+        elif(nome == 'AQUECE_LIGAR' and not self.AQUECE_LIGAR):
             deadline = 18
             tempo_exec = random.randint(5, 10)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -173,7 +174,7 @@ class controle_tarefas():
             self.AQUECE_LIGAR = True
             self.ID_COUNT += 1
 
-        if(nome == 'AQUECE_DESLIG' and not self.AQUECE_DESLIG):
+        elif(nome == 'AQUECE_DESLIG' and not self.AQUECE_DESLIG):
             deadline = 18
             tempo_exec = random.randint(5, 10)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -182,7 +183,7 @@ class controle_tarefas():
             self.ID_COUNT += 1
 
         ###LAMPADA###
-        if(nome == 'LAMPAD_LIGAR' and not self.LAMPAD_LIGAR):
+        elif(nome == 'LAMPAD_LIGAR' and not self.LAMPAD_LIGAR):
             deadline = 5
             tempo_exec = random.randint(1, 3)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -190,7 +191,7 @@ class controle_tarefas():
             self.LAMPAD_LIGAR = True
             self.ID_COUNT += 1
 
-        if(nome == 'LAMPAD_DESLIG' and not self.LAMPAD_DESLIG):
+        elif(nome == 'LAMPAD_DESLIG' and not self.LAMPAD_DESLIG):
             deadline = 3
             tempo_exec = random.randint(1, 3)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -199,7 +200,7 @@ class controle_tarefas():
             self.ID_COUNT += 1
 
         ###TELEVISÃO###
-        if(nome == 'TV_LIGAR' and not self.TV_LIGAR):
+        elif(nome == 'TV_LIGAR' and not self.TV_LIGAR):
             deadline = 5
             tempo_exec = random.randint(1, 4)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -207,7 +208,7 @@ class controle_tarefas():
             self.TV_LIGAR = True
             self.ID_COUNT += 1
 
-        if(nome == 'TV_DESLIG' and not self.TV_DESLIG):
+        elif(nome == 'TV_DESLIG' and not self.TV_DESLIG):
             deadline = 3
             tempo_exec = random.randint(1, 3)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
@@ -216,7 +217,7 @@ class controle_tarefas():
             self.ID_COUNT += 1
 
         ###ASPIRADOR DE PÓ###
-        if(nome == 'ASPIRA' and not self.ASPIRA):
+        elif(nome == 'ASPIRA' and not self.ASPIRA):
             deadline = 800
             tempo_exec = random.randint(300, 400)
             tarefa_ = tarefa(nome, self.ID_COUNT, deadline, tempo_exec)
