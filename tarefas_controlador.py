@@ -4,6 +4,7 @@ import time
 import os
 from _global import insert_message
 
+
 class tarefa(object):
     def __init__(self, nome, n_id, deadline, tempo_req):
         self.nome = nome
@@ -14,6 +15,7 @@ class tarefa(object):
         self.tempo_req = tempo_req
 
         self.event_flag = False  # Flag para printar quando algo ocorrer.
+
 
 class escalonador():
     # Algoritmo EDF.
@@ -36,11 +38,11 @@ class escalonador():
             if(tarefa.deadline <= 0):
                 insert_message("A tarefa " + tarefa.nome +
                                " teve sua deadline estourada.")
-                insert_message("Removendo tarefa da lista.")
+                insert_message("Removendo tarefa da lista...")
                 self.tarefas_lista.remove(tarefa)
-                return True
+                return tarefa.nome + "_r"
 
-        return False
+        return None
 
     def executar(self):
         if(self.tarefa_exec == None):
@@ -80,7 +82,7 @@ class escalonador():
                         self.tarefa_exec = self.tarefas_lista.pop(0)
                         return None
                 else:
-                    return 'executando'
+                    return 'Executando'
 
 
 class controle_tarefas():
