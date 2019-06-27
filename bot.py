@@ -38,7 +38,7 @@ class bot():
             if(ambiente.janela == False):
                 self.controlador.cria_tarefa('JANELA_FECHAR')
 
-        elif(ambiente.ar_condicionado == False and ambiente.aquecedor == False):
+        elif(ambiente.ar_condicionado == False and ambiente.aquecedor == False and ambiente.chuva == False):
             # Abrir a janela caso ar condicionado ou aquecedor ligado.
             if(ambiente.janela == True):
                 self.controlador.cria_tarefa('JANELA_ABRIR')
